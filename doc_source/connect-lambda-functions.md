@@ -17,7 +17,7 @@ To invoke a Lambda function from a flow, complete the following tasks\.
 
 Create a Lambda function, using any runtime, and configure it\. For more information, see [Get started with Lambda](https://docs.aws.amazon.com/lambda/latest/dg/get-started.html) in the *AWS Lambda Developer Guide*\.
 
-If you create the Lambda function in the same Region as your contact center, you can use the Amazon Connect console to add the Lambda function to your instance as described in the next task, [Add a Lambda function to your Amazon Connect instance](#add-lambda-function)\. This automatically adds resource permissions that allow Amazon Connect to invoke the Lambda function\. Otherwise, if the Lambda function is in a different Region, you can add it to your flow using the flow designer and add the resource permissions using the [add\-permission](https://docs.aws.amazon.com/cli/latest/reference/lambda/add-permission.html) command, with a principal of `connect.amazonaws.com` and the ARN of your Amazon Connect instance\. For more information, see [Using Resource\-Based Policies for AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html) in the *AWS Lambda Developer Guide*\.
+If you create the Lambda function in the same Region as your contact center, you can use the Amazon Connect console to add the Lambda function to your instance as described in the next task, [Add a Lambda function to your Amazon Connect instance](#add-lambda-function)\. This automatically adds resource permissions that allow Amazon Connect to invoke the Lambda function\. Otherwise, if the Lambda function is in a different Region, you can add it to your flow using the flow designer and add the resource permissions using the [add\-permission](https://docs.aws.amazon.com/cli/latest/reference/lambda/add-permission.html) command, with a principal of `connect.amazonaws.com` and the ARN of your Amazon Connect instance\. For more information, see [Using Resource\-Based Policies for AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.hftml) in the *AWS Lambda Developer Guide*\.
 
 ## Add a Lambda function to your Amazon Connect instance<a name="add-lambda-function"></a>
 
@@ -214,7 +214,7 @@ def lambda_handler(event, context):
  return resultMap
 ```
 
-The output returned from the function must be a flat object of key/value pairs, with values that include only alphanumeric, dash, and underscore characters\. Nested and complex objects are not supported\. The size of the returned data must be less than 32 KB of UTF\-8 data\.
+If using the "STRING MAP" option, the output returned from the function must be a flat object of key/value pairs, with values that include only alphanumeric, dash, and underscore characters\. For nested and complex objects, you must select the "JSON" option\. The size of the returned data must be less than 32 KB of UTF\-8 data\.
 
 The following example shows the JSON output from these Lambda functions:
 
@@ -248,10 +248,24 @@ There are two ways to use the function response in your flow\. You can either di
 
  If you access the variables directly, you can use them in flow blocks, but they are not included in contact records\. To access these variables directly in a flow block, add the block after the **Invoke AWS Lambda function** block, and then reference the attributes as shown in the following example: 
 
+For the JSON response:
+
 ```
-Name - $.External.Name
-Address - $.External.Address
-CallerType - $.External.CallerType
+{
+  "Name": {
+      "First": "John",
+      "Last": "Doe"
+  },
+  "AccountId": "a12345689"
+}
+```
+
+The attributes can be accessed as follows:
+
+```
+First Name - $.External.Name.First
+Last Name - $.External.Name.Last
+AccountId - $.External.AccountId
 ```
 
 The following image shows the properties page of the **Play prompt** block\. The variables are specified in the text\-to\-speech block\.
